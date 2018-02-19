@@ -11,12 +11,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import in.bcs.codingexercise.R;
 import in.bcs.codingexercise.adapter.FactsAdapter;
 import in.bcs.codingexercise.model.Facts;
+import in.bcs.codingexercise.model.FactsRowItems;
 import in.bcs.codingexercise.rest.ApiInterface;
 import in.bcs.codingexercise.rest.RetrofitClient;
 import in.bcs.codingexercise.utils.Utils;
@@ -37,6 +39,7 @@ public class FactsRecyclerActivity extends AppCompatActivity {
 
     private ApiInterface mApiInterface;
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +98,12 @@ public class FactsRecyclerActivity extends AppCompatActivity {
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                     Facts body = response.body();
-                    FactsAdapter factsAdapter = new FactsAdapter(FactsRecyclerActivity.this, body.getTitle(), body.removeEmpty(body.getRows()));
+                    FactsAdapter factsAdapter = new FactsAdapter(FactsRecyclerActivity.this, body.getTitle(), body.removeEmpty(body.getRows()), new FactsAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(FactsRowItems item) {
+                            Toast.makeText(getApplicationContext(), item.getTitle() + "\n" + item.getDescription(), Toast.LENGTH_LONG).show();
+                        }
+                    });
                     recyclerView.setAdapter(factsAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(FactsRecyclerActivity.this));
 

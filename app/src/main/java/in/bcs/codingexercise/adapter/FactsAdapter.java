@@ -41,12 +41,19 @@ public class FactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
      * @param factsTitle  Header Title
      * @param itemObjects List items to be shown in recycler view
      */
-    public FactsAdapter(Context context, String factsTitle, List<FactsRowItems> itemObjects) {
+    public FactsAdapter(Context context, String factsTitle, List<FactsRowItems> itemObjects, OnItemClickListener listener) {
         this.itemObjects = itemObjects;
         this.factsTitle = factsTitle;
         this.context = context;
-
+        this.listener = listener;
     }
+
+
+    public interface OnItemClickListener {
+        void onItemClick(FactsRowItems item);
+    }
+
+    private final OnItemClickListener listener;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,7 +71,7 @@ public class FactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        FactsRowItems mObject = itemObjects.get(position);
+        final FactsRowItems mObject = itemObjects.get(position);
         if (holder instanceof FactsHeaderViewHolder) {
             //Setting the Header
             ((FactsHeaderViewHolder) holder).headerTitle.setText(factsTitle);
@@ -98,6 +105,13 @@ public class FactsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         setAnimation(holder.itemView, position);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onItemClick(mObject);
+            }
+        });
     }
 
 
