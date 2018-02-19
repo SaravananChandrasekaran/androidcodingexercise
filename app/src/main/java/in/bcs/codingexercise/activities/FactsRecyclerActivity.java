@@ -40,6 +40,8 @@ public class FactsRecyclerActivity extends AppCompatActivity {
     private ApiInterface mApiInterface;
     private ProgressDialog progressDialog;
 
+    //Stores the result count for Unit Testing
+    private int itemsCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +100,7 @@ public class FactsRecyclerActivity extends AppCompatActivity {
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
                     Facts body = response.body();
+                    setItemsCount(body.removeEmpty(body.getRows()).size());
                     FactsAdapter factsAdapter = new FactsAdapter(FactsRecyclerActivity.this, body.getTitle(), body.removeEmpty(body.getRows()), new FactsAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(FactsRowItems item) {
@@ -122,6 +125,15 @@ public class FactsRecyclerActivity extends AppCompatActivity {
         } else {
             toggleError(true, getString(R.string.no_internet));
         }
+    }
+
+
+    public int getItemsCount() {
+        return itemsCount;
+    }
+
+    public void setItemsCount(int itemsCount) {
+        this.itemsCount = itemsCount;
     }
 
     /**
